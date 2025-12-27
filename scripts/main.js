@@ -211,74 +211,31 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// Scroll-linked horizontal carousel
-function initScrollCarousel() {
-    const galleryContainer = document.querySelector('.gallery-container');
-    const galleryCarousel = document.querySelector('.gallery-carousel');
-    
-    if (!galleryContainer || !galleryCarousel) return;
-    
-    const totalImages = 7;
-    const visibleImages = 4;
-    const hiddenImages = totalImages - visibleImages;
-    
-    // Calculate max translation: we need to move by the width of hidden images
-    // Each image is 25vw (100vw / 4 visible images)
-    // Hidden images: 3 images = 3 * 25vw = 75vw
-    // As percentage of container width (100vw): 75%
-    const maxTranslateX = (hiddenImages / visibleImages) * 100;
-    
-    let ticking = false;
-    
-    function updateCarousel() {
-        const containerRect = galleryContainer.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
-        const containerHeight = containerRect.height;
-        
-        // Calculate scroll progress through the gallery section
-        // Progress starts when top of container reaches viewport
-        // Progress ends when bottom of container reaches top of viewport
-        let scrollProgress = 0;
-        
-        if (containerRect.top < windowHeight && containerRect.bottom > 0) {
-            // Container is in viewport
-            // Calculate how far through the scroll we are
-            // Extend the scroll range to make movement slower (multiply by 2 for slower movement)
-            const scrollStart = windowHeight; // When container top hits bottom of viewport
-            const scrollEnd = -containerHeight; // When container bottom hits top of viewport
-            const scrollRange = (scrollStart - scrollEnd) * 8; // Multiply by 2 to slow down
-            const currentPosition = containerRect.top;
-            
-            scrollProgress = Math.max(0, Math.min(1, (scrollStart - currentPosition) / scrollRange));
-        }
-        
-        // Translate carousel horizontally based on scroll progress
-        // At progress 0: show first 4 images (translateX = 0%)
-        // At progress 1: show last 4 images (translateX = maxTranslateX%)
-        const translateX = scrollProgress * maxTranslateX;
-        galleryCarousel.style.transform = `translateX(-${translateX}%)`;
-        
-        ticking = false;
+// Initialize Flickity carousel
+function initFlickityCarousel() {
+    const carousel = document.querySelector('.gallery-carousel');
+    if (!carousel) return;
+
+    // Initialize Flickity if not already initialized
+    if (typeof Flickity !== 'undefined' && !carousel.flickity) {
+        new Flickity(carousel, {
+            cellAlign: 'left',
+            contain: true,
+            wrapAround: true,
+            autoPlay: 4000,
+            pageDots: false,
+            prevNextButtons: false,
+            draggable: true,
+            freeScroll: false,
+            groupCells: true
+        });
     }
-    
-    function onScroll() {
-        if (!ticking) {
-            window.requestAnimationFrame(updateCarousel);
-            ticking = true;
-        }
-    }
-    
-    // Listen to scroll events
-    window.addEventListener('scroll', onScroll, { passive: true });
-    
-    // Initial update
-    updateCarousel();
 }
 
-// Initialize carousel when DOM is ready
+// Initialize carousel and EmailJS when DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-        initScrollCarousel();
+        initFlickityCarousel();
         // Initialize EmailJS after DOM is ready
         if (typeof emailjs !== 'undefined') {
             // TODO: Replace with your EmailJS Public Key
@@ -286,7 +243,7 @@ if (document.readyState === 'loading') {
         }
     });
 } else {
-    initScrollCarousel();
+    initFlickityCarousel();
     // Initialize EmailJS
     if (typeof emailjs !== 'undefined') {
         // TODO: Replace with your EmailJS Public Key

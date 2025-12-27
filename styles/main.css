@@ -604,11 +604,16 @@ ease;
 }
 
 .gallery-carousel {
+    width: 100%;
+}
+
+/* Flickity cell styling */
+.gallery-carousel .flickity-viewport {
+    overflow: visible;
+}
+
+.gallery-carousel .flickity-slider {
     display: flex;
-    gap: 0;
-    width: calc(100% * 7 / 4);
-    will-change: transform;
-    transition: transform 0.1s ease-out;
 }
 
 .big-text {
@@ -627,13 +632,17 @@ ease;
 
 .gallery-item {
     width: calc(100vw / 4);
-    flex-shrink: 0;
     border-radius: 9px;
-    margin: 9px;
-
+    margin-right: 18px;
     aspect-ratio: 1;
     overflow: hidden;
     position: relative;
+}
+
+/* Flickity cell */
+.gallery-carousel .flickity-cell {
+    width: calc(100vw / 4);
+    margin-right: 18px;
 }
 
 .gallery-image {
@@ -740,8 +749,9 @@ ease;
     }
     
     
-    .gallery-item {
-        width: calc(100vw / 1.5);
+    .gallery-item,
+    .gallery-carousel .flickity-cell {
+        width: 100vw;
     }
 }
 
