@@ -93,13 +93,13 @@ rsvpForm.addEventListener('submit', async (e) => {
         data[key] = value;
     }
     
-    // Check if attending checkbox is checked
-    const attendingCheckbox = document.getElementById('attending');
-    data.attending = attendingCheckbox.checked ? 'yes' : 'no';
+    // Get selected radio button value for attending
+    const attendingRadio = document.querySelector('input[name="attending"]:checked');
+    data.attending = attendingRadio ? attendingRadio.value : '';
     
     // Validate required fields
-    if (!data.guestName || !attendingCheckbox.checked) {
-        showMessage('Please fill in your name and confirm you are coming.', 'error');
+    if (!data.guestName || !data.attending) {
+        showMessage('Please fill in your name and select if you are attending.', 'error');
         return;
     }
     
@@ -125,7 +125,7 @@ rsvpForm.addEventListener('submit', async (e) => {
         // Prepare email template parameters
         const templateParams = {
             guest_name: data.guestName,
-            attending: data.attending === 'yes' ? 'Yes, I\'m coming!' : 'No',
+            attending: data.attending === 'yes' ? 'Yes, I\'m coming!' : 'No, I can\'t make it',
             welcome_cocktail: data.welcomeCocktail || 'Not specified',
             shuttle: data.shuttle || 'Not specified',
             plus_one: plusOneInfo,
